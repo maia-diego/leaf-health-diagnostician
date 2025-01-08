@@ -1,0 +1,53 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment and dependencies
+env/
+venv/
+.venv/
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and debugging files
+*.log
+*.bak
+*.swp
+
+# Python tools
+*.coverage
+.coverage.*
+.cache/
+.pytest_cache/
+
+# Data and datasets
+data/
+*.zip
+*.tar
+*.tar.gz
+*.h5
+
+# Model files
+models/
+*.pth
+*.pt
+
+# Config files and API keys
+kaggle.json
+config.yaml
+*.env
+
+# Visual Studio Code settings
+.vscode/
+
+# IDE settings
+.idea/

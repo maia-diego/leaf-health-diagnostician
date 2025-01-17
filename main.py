@@ -1,3 +1,19 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from src.train import train_model
+    print("Successfully imported train_model.")
+except ImportError as e:
+    print(f"Error importing train_model: {e}")
+
+try:
+    from src.evaluate import evaluate_model
+    print("Successfully imported evaluate_model.")
+except ImportError as e:
+    print(f"Error importing evaluate_model: {e}")
+
 import argparse
 from src.train import train_model
 from src.evaluate import evaluate_model

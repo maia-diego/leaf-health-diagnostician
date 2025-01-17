@@ -51,3 +51,5 @@ config.yaml
 
 # IDE settings
 .idea/
+
+*.jpg

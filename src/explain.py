@@ -1,34 +1,70 @@
-import shap
+import os
+import logging
 import torch
+import numpy as np
+import torch.nn as nn
 from torchvision import models
+from torch.utils.data import DataLoader
+from torchvision import transforms
 from src.data import load_data
 
-def explain_model(data_dir="data", model_path="models/leaf_health_model.pth", batch_size=32):
+# Configuração de logging
+logging.basicConfig(level=logging.INFO)
+
+def explain_model(data_dir="data", batch_size=32):
+    """Função para explicar as predições do modelo."""
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train_loader, _, _ = load_data(data_dir, batch_size)
     
-    # Define the model architecture
-    model = models.resnet18(pretrained=False)
-    model.fc = torch.nn.Linear(model.fc.in_features, 2)  # Adjust for binary classification
-    model.load_state_dict(torch.load(model_path, map_location=device, weights_only=False))
+    # Carregar os dados
+    logging.info("Carregando dados para explicação...")
+    _, _, test_loader = load_data(data_dir, batch_size)
+    logging.info("Dados carregados com sucesso.")
+
+    # Inicializando o modelo
+    model = models.googlenet(aux_logits=True)  # Desabilitar auxiliar
+    model.fc = nn.Linear(model.fc.in_features, 2)  # Ajustar para 2 classes
     model = model.to(device)
-    model.eval()
 
-    # Fix in-place ReLU issues by replacing all in-place ReLU layers
-    for module in model.modules():
-        if isinstance(module, torch.nn.ReLU):
-            module.inplace = False
-    
-    # Get a batch of data
-    background = next(iter(train_loader))[0][:100].to(device)  # Use 100 samples as background for SHAP
-    explainer = shap.DeepExplainer(model, background)
+    # Carregar o estado do modelo
+    model_path = "models/leaf_health_model.pth"
+    logging.info("Carregando o modelo...")
+    try:
+        # Load state_dict usando weights_only=True
+        state_dict = torch.load(model_path, map_location=device, weights_only=True)
+        
+        # Filtrar chaves indesejadas do estado
+        if 'fc.weight' in state_dict and 'fc.bias' in state_dict:
+            del state_dict['fc.weight']
+            del state_dict['fc.bias']
 
-    # Use the first batch from the train loader for explanation
-    sample_data, _ = next(iter(train_loader))
-    sample_data = sample_data.to(device)
+        # Carregar pesos no modelo
+        model.load_state_dict(state_dict, strict=False)
+        
+    except Exception as e:
+        logging.error(f"Erro ao carregar o modelo: {e}")
+        return
+
+    model.eval()  # Coloque o modelo em modo de avaliação
+
+    # Inicializando variáveis para a explicação
+    explanations = []
+    with torch.no_grad():  # Desativando gradientes
+        for data, _ in test_loader:  # Supondo que os dados possuem targets, mas não são necessários para explicações
+            data = data.to(device)
+
+            # Forward pass
+            outputs = model(data)
+            predictions = outputs.argmax(dim=1)
+
+            explanations.append(predictions.cpu().numpy())  # Armazena as previsões
+
+    # Transformar explicações em um formato de saída desejado
+    explanations = np.concatenate(explanations)
+    logging.info("Explicações geradas com sucesso.")
     
-    # Generate SHAP values
-    shap_values = explainer.shap_values(sample_data)
-    
-    # Visualize SHAP values
-    shap.image_plot([shap_values[0]], sample_data.cpu().numpy())
+    # Exibir ou salvar as explicações conforme sua necessidade
+    print("Predições:", explanations)
+
+if __name__ == "__main__":
+    explain_model(data_dir='data', batch_size=32)

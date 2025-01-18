@@ -5,3 +5,6 @@ matplotlib
 shap
 numpy
 pandas
+yaml
+logging
+tensorboard

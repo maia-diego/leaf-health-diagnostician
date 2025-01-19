@@ -4,14 +4,18 @@ import torch
 import numpy as np
 import torch.nn as nn
 from torchvision import models
-from torch.utils.data import DataLoader
-from torchvision import transforms
 from src.data import load_data
+import yaml
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
 
-def explain_model(data_dir="data", batch_size=32):
+def load_config(file_path="config.yaml"):
+    """Carrega as configurações do arquivo YAML."""
+    with open(file_path, 'r') as file:
+        return yaml.safe_load(file)
+
+def explain_model(data_dir, batch_size):
     """Função para explicar as predições do modelo."""
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -22,16 +26,15 @@ def explain_model(data_dir="data", batch_size=32):
     logging.info("Dados carregados com sucesso.")
 
     # Inicializando o modelo
-    model = models.googlenet(aux_logits=True)  # Desabilitar auxiliar
-    model.fc = nn.Linear(model.fc.in_features, 2)  # Ajustar para 2 classes
+    model = models.googlenet(aux_logits=False)  # Desabilitando a saída auxiliar
+    model.fc = nn.Linear(model.fc.in_features, 2)  # Ajustando para 2 classes
     model = model.to(device)
 
     # Carregar o estado do modelo
     model_path = "models/leaf_health_model.pth"
     logging.info("Carregando o modelo...")
     try:
-        # Load state_dict usando weights_only=True
-        state_dict = torch.load(model_path, map_location=device, weights_only=True)
+        state_dict = torch.load(model_path, map_location=device)
         
         # Filtrar chaves indesejadas do estado
         if 'fc.weight' in state_dict and 'fc.bias' in state_dict:
@@ -45,7 +48,7 @@ def explain_model(data_dir="data", batch_size=32):
         logging.error(f"Erro ao carregar o modelo: {e}")
         return
 
-    model.eval()  # Coloque o modelo em modo de avaliação
+    model.eval()  # Coloca o modelo em modo de avaliação
 
     # Inicializando variáveis para a explicação
     explanations = []
@@ -67,4 +70,7 @@ def explain_model(data_dir="data", batch_size=32):
     print("Predições:", explanations)
 
 if __name__ == "__main__":
-    explain_model(data_dir='data', batch_size=32)
+    config = load_config()  # Carrega as configurações do arquivo YAML
+    data_dir = config['training']['data_dir']  # Obtém o diretório de dados do arquivo de configuração
+    batch_size = config['training']['batch_size']  # Obtém o tamanho do lote do arquivo de configuração
+    explain_model(data_dir=data_dir, batch_size=batch_size)

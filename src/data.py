@@ -1,67 +1,79 @@
 import logging
+from datetime import datetime
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, random_split
+import yaml
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Configure logging to save to a file with a timestamp
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # Formato: YYYYMMDD_HHMMSS
+log_file = f'logs/data_log_{timestamp}.txt'
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def load_config(file_path="config.yaml"):
+    """Carrega as configurações do arquivo YAML."""
+    with open(file_path, 'r') as file:
+        return yaml.safe_load(file)
 
 def load_data(data_dir, batch_size=32, train_ratio=0.7, val_ratio=0.15, transform=None):
     """
-    Load the dataset and split it into training, validation, and test sets.
+    Carrega o conjunto de dados e o divide em conjuntos de treinamento, validação e teste.
 
     Args:
-        data_dir (str): Path to the dataset directory.
-        batch_size (int): Batch size for the DataLoader.
-        train_ratio (float): Proportion of the dataset to include in the training set.
-        val_ratio (float): Proportion of the dataset to include in the validation set.
-        transform (callable, optional): Transformations to apply to the images.
+        data_dir (str): Caminho para o diretório do conjunto de dados.
+        batch_size (int): Tamanho do lote para o DataLoader.
+        train_ratio (float): Proporção do conjunto de dados a incluir no conjunto de treinamento.
+        val_ratio (float): Proporção do conjunto de dados a incluir no conjunto de validação.
+        transform (callable, optional): Transformações a serem aplicadas às imagens.
 
     Returns:
-        DataLoader: DataLoaders for training, validation, and testing.
+        DataLoader: DataLoaders para treinamento, validação e teste.
     """
-    logging.info("Starting the data loading process...")
+    logging.info("Iniciando o processo de carregamento de dados...")
 
     # Use default transformations if none are provided
     if transform is None:
-        logging.info("Defining default data transformations...")
+        logging.info("Definindo transformações padrão para os dados...")
         transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(10),
             transforms.Resize((128, 128)),
             transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalização padrão do ImageNet
         ])
     
-    # Load the dataset
-    logging.info(f"Loading dataset from directory: {data_dir}")
+    # Carrega o conjunto de dados
+    logging.info(f"Carregando o conjunto de dados do diretório: {data_dir}")
     try:
         dataset = datasets.ImageFolder(root=data_dir, transform=transform)
     except Exception as e:
-        logging.error(f"Error loading dataset: {e}")
+        logging.error(f"Erro ao carregar o conjunto de dados: {e}")
         return None, None, None
     
-    logging.info(f"Total number of samples in the dataset: {len(dataset)}")
-    logging.info(f"Classes found: {dataset.classes}")
+    logging.info(f"Número total de amostras no conjunto de dados: {len(dataset)}")
+    logging.info(f"Classes encontradas: {dataset.classes}")
 
-    # Split dataset into train, validation, and test sets
+    # Divide o conjunto de dados em conjuntos de treinamento, validação e teste
     total_size = len(dataset)
     train_size = int(train_ratio * total_size)
     val_size = int(val_ratio * total_size)
     test_size = total_size - train_size - val_size
-    logging.info(f"Splitting dataset: {train_size} training samples, {val_size} validation samples, {test_size} test samples.")
+    logging.info(f"Dividindo o conjunto de dados: {train_size} amostras de treinamento, {val_size} amostras de validação, {test_size} amostras de teste.")
     
     train_dataset, val_dataset, test_dataset = random_split(dataset, [train_size, val_size, test_size])
     
-    # Create DataLoaders
-    logging.info(f"Creating DataLoaders with batch size: {batch_size}")
+    # Cria DataLoaders
+    logging.info(f"Criando DataLoaders com tamanho de lote: {batch_size}")
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    logging.info("Data loading process completed successfully.")
+    logging.info("Processo de carregamento de dados concluído com sucesso.")
     return train_loader, val_loader, test_loader
 
-# Example usage (remove or comment this before integrating with your main project)
-if __name__ == "__main__":
-    train_loader, val_loader, test_loader = load_data(data_dir="data", batch_size=32)
-    logging.info("Train loader, validation loader, and test loader are ready.")
+# Exemplo de uso (remova ou comente isso antes de integrar ao seu projeto principal)
+# if __name__ == "__main__":
+#     config = load_config()  # Carrega as configurações do arquivo YAML
+#     data_dir = config['training']['data_dir']  # Obtém o diretório de dados do arquivo de configuração
+#     batch_size = config['training']['batch_size']  # Obtém o tamanho do lote do arquivo de configuração
+#     train_loader, val_loader, test_loader = load_data(data_dir=data_dir, batch_size=batch_size)
+#     logging.info("Train loader, validation loader, and test loader are ready.")

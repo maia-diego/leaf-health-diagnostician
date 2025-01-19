@@ -1,0 +1,130 @@
+2025-01-19 17:56:44,942 - INFO - Diretório de imagens para avaliação: /home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/Mango_Leaf_Dataset
+2025-01-19 17:56:44,942 - INFO - Iniciando o script Leaf Health Diagnostician.
+2025-01-19 17:56:44,942 - INFO - Argumentos fornecidos: Namespace(train=True, evaluate=False, explain=False, classify=None)
+2025-01-19 17:56:44,942 - INFO - Iniciando o treinamento...
+2025-01-19 17:56:44,942 - INFO - Inicializando o classificador de saúde das folhas.
+2025-01-19 17:56:45,152 - INFO - Inicializando o modelo GoogLeNet.
+2025-01-19 17:56:45,504 - INFO - Inicializando pesos do modelo.
+2025-01-19 17:56:45,517 - INFO - Iniciando o treinamento do modelo.
+2025-01-19 17:56:45,517 - INFO - Iniciando o processo de carregamento de dados...
+2025-01-19 17:56:45,517 - INFO - Definindo transformações padrão para os dados...
+2025-01-19 17:56:45,517 - INFO - Carregando o conjunto de dados do diretório: /home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/data
+2025-01-19 17:56:45,559 - INFO - Número total de amostras no conjunto de dados: 19762
+2025-01-19 17:56:45,559 - INFO - Classes encontradas: ['diseased', 'healthy']
+2025-01-19 17:56:45,559 - INFO - Dividindo o conjunto de dados: 9881 amostras de treinamento, 2964 amostras de validação, 6917 amostras de teste.
+2025-01-19 17:56:45,560 - INFO - Criando DataLoaders com tamanho de lote: 64
+2025-01-19 17:56:45,560 - INFO - Processo de carregamento de dados concluído com sucesso.
+2025-01-19 17:56:45,561 - INFO - Iniciando a época 1/20.
+2025-01-19 17:58:36,249 - INFO - Perda média de treinamento na época 1: 0.1558
+2025-01-19 17:59:07,613 - INFO - Validação concluída: Val Loss: 0.1069, Acurácia: 0.9585
+2025-01-19 17:59:07,613 - INFO - Epoch 1/20, Val Loss: 0.1069, Val Accuracy: 0.9585
+2025-01-19 17:59:07,671 - INFO - Modelo salvo com melhor perda de validação: 0.1069
+2025-01-19 17:59:07,671 - INFO - Tempo de treinamento para a época 1: 142.11 segundos
+2025-01-19 17:59:07,672 - INFO - Iniciando a época 2/20.
+2025-01-19 18:00:56,255 - INFO - Perda média de treinamento na época 2: 0.0747
+2025-01-19 18:01:27,412 - INFO - Validação concluída: Val Loss: 0.1599, Acurácia: 0.9440
+2025-01-19 18:01:27,413 - INFO - Epoch 2/20, Val Loss: 0.1599, Val Accuracy: 0.9440
+2025-01-19 18:01:27,413 - INFO - Tempo de treinamento para a época 2: 139.74 segundos
+2025-01-19 18:01:27,414 - INFO - Iniciando a época 3/20.
+2025-01-19 18:03:15,766 - INFO - Perda média de treinamento na época 3: 0.0525
+2025-01-19 18:03:46,592 - INFO - Validação concluída: Val Loss: 0.0998, Acurácia: 0.9652
+2025-01-19 18:03:46,592 - INFO - Epoch 3/20, Val Loss: 0.0998, Val Accuracy: 0.9652
+2025-01-19 18:03:46,652 - INFO - Modelo salvo com melhor perda de validação: 0.0998
+2025-01-19 18:03:46,653 - INFO - Tempo de treinamento para a época 3: 139.24 segundos
+2025-01-19 18:03:46,653 - INFO - Iniciando a época 4/20.
+2025-01-19 18:05:34,178 - INFO - Perda média de treinamento na época 4: 0.0610
+2025-01-19 18:06:05,781 - INFO - Validação concluída: Val Loss: 0.0462, Acurácia: 0.9818
+2025-01-19 18:06:05,781 - INFO - Epoch 4/20, Val Loss: 0.0462, Val Accuracy: 0.9818
+2025-01-19 18:06:05,842 - INFO - Modelo salvo com melhor perda de validação: 0.0462
+2025-01-19 18:06:05,842 - INFO - Tempo de treinamento para a época 4: 139.19 segundos
+2025-01-19 18:06:05,843 - INFO - Iniciando a época 5/20.
+2025-01-19 18:07:54,601 - INFO - Perda média de treinamento na época 5: 0.0455
+2025-01-19 18:08:26,624 - INFO - Validação concluída: Val Loss: 0.0367, Acurácia: 0.9821
+2025-01-19 18:08:26,624 - INFO - Epoch 5/20, Val Loss: 0.0367, Val Accuracy: 0.9821
+2025-01-19 18:08:26,688 - INFO - Modelo salvo com melhor perda de validação: 0.0367
+2025-01-19 18:08:26,688 - INFO - Tempo de treinamento para a época 5: 140.85 segundos
+2025-01-19 18:08:26,689 - INFO - Iniciando a época 6/20.
+2025-01-19 18:10:15,109 - INFO - Perda média de treinamento na época 6: 0.0433
+2025-01-19 18:10:46,698 - INFO - Validação concluída: Val Loss: 0.0445, Acurácia: 0.9831
+2025-01-19 18:10:46,698 - INFO - Epoch 6/20, Val Loss: 0.0445, Val Accuracy: 0.9831
+2025-01-19 18:10:46,699 - INFO - Tempo de treinamento para a época 6: 140.01 segundos
+2025-01-19 18:10:46,700 - INFO - Iniciando a época 7/20.
+2025-01-19 18:12:36,330 - INFO - Perda média de treinamento na época 7: 0.0342
+2025-01-19 18:13:08,251 - INFO - Validação concluída: Val Loss: 0.0158, Acurácia: 0.9949
+2025-01-19 18:13:08,251 - INFO - Epoch 7/20, Val Loss: 0.0158, Val Accuracy: 0.9949
+2025-01-19 18:13:08,312 - INFO - Modelo salvo com melhor perda de validação: 0.0158
+2025-01-19 18:13:08,313 - INFO - Tempo de treinamento para a época 7: 141.61 segundos
+2025-01-19 18:13:08,313 - INFO - Iniciando a época 8/20.
+2025-01-19 18:15:00,556 - INFO - Perda média de treinamento na época 8: 0.0287
+2025-01-19 18:15:33,178 - INFO - Validação concluída: Val Loss: 0.0304, Acurácia: 0.9848
+2025-01-19 18:15:33,179 - INFO - Epoch 8/20, Val Loss: 0.0304, Val Accuracy: 0.9848
+2025-01-19 18:15:33,179 - INFO - Tempo de treinamento para a época 8: 144.87 segundos
+2025-01-19 18:15:33,180 - INFO - Iniciando a época 9/20.
+2025-01-19 18:17:24,058 - INFO - Perda média de treinamento na época 9: 0.0344
+2025-01-19 18:17:56,626 - INFO - Validação concluída: Val Loss: 0.0473, Acurácia: 0.9841
+2025-01-19 18:17:56,627 - INFO - Epoch 9/20, Val Loss: 0.0473, Val Accuracy: 0.9841
+2025-01-19 18:17:56,628 - INFO - Tempo de treinamento para a época 9: 143.45 segundos
+2025-01-19 18:17:56,628 - INFO - Iniciando a época 10/20.
+2025-01-19 18:19:47,988 - INFO - Perda média de treinamento na época 10: 0.0268
+2025-01-19 18:20:20,928 - INFO - Validação concluída: Val Loss: 0.0355, Acurácia: 0.9875
+2025-01-19 18:20:20,929 - INFO - Epoch 10/20, Val Loss: 0.0355, Val Accuracy: 0.9875
+2025-01-19 18:20:20,930 - INFO - Tempo de treinamento para a época 10: 144.30 segundos
+2025-01-19 18:20:20,931 - INFO - Iniciando a época 11/20.
+2025-01-19 18:22:11,457 - INFO - Perda média de treinamento na época 11: 0.0253
+2025-01-19 18:22:43,754 - INFO - Validação concluída: Val Loss: 0.0164, Acurácia: 0.9963
+2025-01-19 18:22:43,755 - INFO - Epoch 11/20, Val Loss: 0.0164, Val Accuracy: 0.9963
+2025-01-19 18:22:43,756 - INFO - Tempo de treinamento para a época 11: 142.83 segundos
+2025-01-19 18:22:43,756 - INFO - Iniciando a época 12/20.
+2025-01-19 18:24:33,064 - INFO - Perda média de treinamento na época 12: 0.0145
+2025-01-19 18:25:04,758 - INFO - Validação concluída: Val Loss: 0.0064, Acurácia: 0.9983
+2025-01-19 18:25:04,758 - INFO - Epoch 12/20, Val Loss: 0.0064, Val Accuracy: 0.9983
+2025-01-19 18:25:04,824 - INFO - Modelo salvo com melhor perda de validação: 0.0064
+2025-01-19 18:25:04,824 - INFO - Tempo de treinamento para a época 12: 141.07 segundos
+2025-01-19 18:25:04,825 - INFO - Iniciando a época 13/20.
+2025-01-19 18:26:52,708 - INFO - Perda média de treinamento na época 13: 0.0097
+2025-01-19 18:27:24,553 - INFO - Validação concluída: Val Loss: 0.0058, Acurácia: 0.9980
+2025-01-19 18:27:24,554 - INFO - Epoch 13/20, Val Loss: 0.0058, Val Accuracy: 0.9980
+2025-01-19 18:27:24,615 - INFO - Modelo salvo com melhor perda de validação: 0.0058
+2025-01-19 18:27:24,615 - INFO - Tempo de treinamento para a época 13: 139.79 segundos
+2025-01-19 18:27:24,616 - INFO - Iniciando a época 14/20.
+2025-01-19 18:29:13,808 - INFO - Perda média de treinamento na época 14: 0.0086
+2025-01-19 18:29:46,039 - INFO - Validação concluída: Val Loss: 0.0053, Acurácia: 0.9983
+2025-01-19 18:29:46,040 - INFO - Epoch 14/20, Val Loss: 0.0053, Val Accuracy: 0.9983
+2025-01-19 18:29:46,105 - INFO - Modelo salvo com melhor perda de validação: 0.0053
+2025-01-19 18:29:46,105 - INFO - Tempo de treinamento para a época 14: 141.49 segundos
+2025-01-19 18:29:46,106 - INFO - Iniciando a época 15/20.
+2025-01-19 18:31:34,316 - INFO - Perda média de treinamento na época 15: 0.0096
+2025-01-19 18:32:06,253 - INFO - Validação concluída: Val Loss: 0.0039, Acurácia: 0.9990
+2025-01-19 18:32:06,253 - INFO - Epoch 15/20, Val Loss: 0.0039, Val Accuracy: 0.9990
+2025-01-19 18:32:06,316 - INFO - Modelo salvo com melhor perda de validação: 0.0039
+2025-01-19 18:32:06,316 - INFO - Tempo de treinamento para a época 15: 140.21 segundos
+2025-01-19 18:32:06,316 - INFO - Iniciando a época 16/20.
+2025-01-19 18:33:54,967 - INFO - Perda média de treinamento na época 16: 0.0076
+2025-01-19 18:34:26,821 - INFO - Validação concluída: Val Loss: 0.0107, Acurácia: 0.9960
+2025-01-19 18:34:26,822 - INFO - Epoch 16/20, Val Loss: 0.0107, Val Accuracy: 0.9960
+2025-01-19 18:34:26,823 - INFO - Tempo de treinamento para a época 16: 140.51 segundos
+2025-01-19 18:34:26,823 - INFO - Iniciando a época 17/20.
+2025-01-19 18:36:15,144 - INFO - Perda média de treinamento na época 17: 0.0070
+2025-01-19 18:36:47,612 - INFO - Validação concluída: Val Loss: 0.0041, Acurácia: 0.9990
+2025-01-19 18:36:47,612 - INFO - Epoch 17/20, Val Loss: 0.0041, Val Accuracy: 0.9990
+2025-01-19 18:36:47,613 - INFO - Tempo de treinamento para a época 17: 140.79 segundos
+2025-01-19 18:36:47,613 - INFO - Iniciando a época 18/20.
+2025-01-19 18:38:34,718 - INFO - Perda média de treinamento na época 18: 0.0063
+2025-01-19 18:39:05,335 - INFO - Validação concluída: Val Loss: 0.0038, Acurácia: 0.9990
+2025-01-19 18:39:05,335 - INFO - Epoch 18/20, Val Loss: 0.0038, Val Accuracy: 0.9990
+2025-01-19 18:39:05,405 - INFO - Modelo salvo com melhor perda de validação: 0.0038
+2025-01-19 18:39:05,405 - INFO - Tempo de treinamento para a época 18: 137.79 segundos
+2025-01-19 18:39:05,406 - INFO - Iniciando a época 19/20.
+2025-01-19 18:40:52,452 - INFO - Perda média de treinamento na época 19: 0.0054
+2025-01-19 18:41:23,062 - INFO - Validação concluída: Val Loss: 0.0052, Acurácia: 0.9987
+2025-01-19 18:41:23,062 - INFO - Epoch 19/20, Val Loss: 0.0052, Val Accuracy: 0.9987
+2025-01-19 18:41:23,063 - INFO - Tempo de treinamento para a época 19: 137.66 segundos
+2025-01-19 18:41:23,064 - INFO - Iniciando a época 20/20.
+2025-01-19 18:43:10,115 - INFO - Perda média de treinamento na época 20: 0.0061
+2025-01-19 18:43:41,637 - INFO - Validação concluída: Val Loss: 0.0050, Acurácia: 0.9990
+2025-01-19 18:43:41,637 - INFO - Epoch 20/20, Val Loss: 0.0050, Val Accuracy: 0.9990
+2025-01-19 18:43:41,638 - INFO - Tempo de treinamento para a época 20: 138.57 segundos
+2025-01-19 18:43:41,638 - INFO - Tempo total de treinamento: 2816.08 segundos
+2025-01-19 18:43:42,148 - INFO - Histórico de treinamento salvo em history/20250119_184342_training_history.csv.
+2025-01-19 18:43:42,149 - INFO - Treinamento concluído e histórico salvo.
+2025-01-19 18:43:42,152 - INFO - Script concluído.

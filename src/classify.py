@@ -1,20 +1,21 @@
 import os
+from datetime import datetime
 import logging
 import torch
 import torch.nn as nn
-from torchvision import models
-from torchvision import transforms
+from torchvision import models, transforms
 from PIL import Image
-import numpy as np
-from src.data import load_data
+import yaml
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+def load_config(file_path="config.yaml"):
+    """Carrega as configurações do arquivo YAML."""
+    with open(file_path, 'r') as file:
+        return yaml.safe_load(file)
 
 def load_model(model_path):
     """Carrega o modelo pré-treinado a partir do caminho especificado."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = models.googlenet(aux_logits=True)  # Se você estiver usando a versão sem saídas auxiliares
+    model = models.googlenet(aux_logits=False)  # Desabilitando a saída auxiliar
     model.fc = nn.Linear(model.fc.in_features, 2)  # Ajustando para 2 classes
     model = model.to(device)
     
@@ -27,14 +28,36 @@ def load_model(model_path):
     model.eval()  # Coloca o modelo em modo de avaliação
     return model
 
-def classify_images(image_dir):
-    """Classifica as imagens em um diretório especificado."""
+config = load_config()
+log_file = os.path.join(config['logging']['log_dir'], f'classify_log_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt')
+
+# Configure logging to save to a file with a timestamp and show in terminal
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+file_handler = logging.FileHandler(log_file)
+file_handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Adiciona o handler do arquivo ao logger
+logging.getLogger().addHandler(file_handler)
+
+
+def classify_images(image_dir, model_path, class_names):
+    """Classifica as imagens em um diretório especificado.
+
+    Args:
+        image_dir (str): Caminho para o diretório contendo as imagens para classificação.
+        model_path (str): Caminho para o modelo pré-treinado.
+        class_names (list): Lista de nomes das classes.
+
+    Returns:
+        list: Lista de tuplas contendo o nome da imagem e a predição.
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    logging.info("Setting up device for inference.")
+    logging.info("Configurando dispositivo para inferência.")
     
-    model_path = "models/leaf_health_model.pth"
-    logging.info(f"Loading model from {model_path}.")
+    logging.info(f"Carregando modelo de {model_path}.")
     model = load_model(model_path)
 
     # Definindo transformação das imagens
@@ -47,23 +70,23 @@ def classify_images(image_dir):
     results = []
     # Para cada imagem no diretório,
     for img_name in os.listdir(image_dir):
-        # Verifica se o arquivo é uma imagem
         img_path = os.path.join(image_dir, img_name)
         
         try:
-            image = Image.open(img_path)
+            image = Image.open(img_path).convert("RGB")  # Garante que a imagem esteja em RGB
             image = transform(image).unsqueeze(0).to(device)  # Adiciona a dimensão do batch e move para o dispositivo
 
             # Forward pass
             with torch.no_grad():
                 output = model(image)
-                prediction = output.argmax(dim=1).item()
-                results.append((img_name, prediction))
+                prediction_index = output.argmax(dim=1).item()
+                prediction_name = class_names[prediction_index]  # Obtém o nome da classe
+                results.append((img_name, prediction_name))
                 
-            logging.info(f"Classified {img_name} as class {prediction}.")
+            logging.info(f"Classificado {img_name} como classe '{prediction_name}'.")
         
         except Exception as e:
-            logging.error(f"Error loading image {img_name}: {e}")
+            logging.error(f"Erro ao carregar a imagem {img_name}: {e}")
 
     return results
 
@@ -71,7 +94,13 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description="Classify images in a directory.")
-    parser.add_argument("image_dir", type=str, help="Path to the directory containing images for classification")
+    parser.add_argument("image_dir", type=str, help="Caminho para o diretório contendo imagens para classificação")
     args = parser.parse_args()
     
-    classify_images(image_dir=args.image_dir)
+    config = load_config()  # Carrega as configurações do arquivo YAML
+    model_path = config['model']['save_path']  # Obtém o caminho do modelo do arquivo de configuração
+
+    # Definindo nomes das classes
+    class_names = ["Healthy", "Diseased"]  # Nomes das classes correspondentes às saídas do modelo
+
+    classify_images(image_dir=args.image_dir, model_path=model_path, class_names=class_names)

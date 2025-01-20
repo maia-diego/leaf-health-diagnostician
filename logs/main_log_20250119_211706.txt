@@ -1,0 +1,45 @@
+2025-01-19 21:17:06,468 - INFO - Diretório de imagens para avaliação: /home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/Mango_Leaf_Dataset
+2025-01-19 21:17:06,468 - INFO - Iniciando o script Leaf Health Diagnostician.
+2025-01-19 21:17:06,468 - INFO - Argumentos fornecidos: Namespace(train=True, evaluate=False, explain=False, classify=None)
+2025-01-19 21:17:06,468 - INFO - Iniciando o treinamento...
+2025-01-19 21:17:06,469 - INFO - Inicializando o classificador de saúde das folhas.
+2025-01-19 21:17:06,668 - INFO - Inicializando a arquitetura da Custom CNN reduzida.
+2025-01-19 21:17:06,750 - INFO - Inicializando pesos do modelo com a técnica de He.
+2025-01-19 21:17:07,045 - INFO - Iniciando o treinamento do modelo.
+2025-01-19 21:17:07,045 - INFO - Iniciando o processo de carregamento de dados...
+2025-01-19 21:17:07,045 - INFO - Definindo transformações padrão para os dados...
+2025-01-19 21:17:07,045 - INFO - Carregando o conjunto de dados do diretório: /home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/data
+2025-01-19 21:17:07,084 - INFO - Número total de amostras no conjunto de dados: 19762
+2025-01-19 21:17:07,085 - INFO - Classes encontradas: ['diseased', 'healthy']
+2025-01-19 21:17:07,085 - INFO - Dividindo o conjunto de dados: 9881 amostras de treinamento, 2964 amostras de validação, 6917 amostras de teste.
+2025-01-19 21:17:07,085 - INFO - Criando DataLoaders com tamanho de lote: 64
+2025-01-19 21:17:07,086 - INFO - Processo de carregamento de dados concluído com sucesso.
+2025-01-19 21:17:07,086 - INFO - Iniciando a época 1/20.
+2025-01-19 21:18:55,276 - INFO - Perda média de treinamento na época 1: 0.4775
+2025-01-19 21:19:25,979 - INFO - Validação concluída: Val Loss: 0.4825, Acurácia: 0.8313
+2025-01-19 21:19:26,076 - INFO - Modelo salvo com melhor perda de validação: 0.4825
+2025-01-19 21:19:26,076 - INFO - Tempo de treinamento para a época 1: 138.99 segundos
+2025-01-19 21:19:26,077 - INFO - Iniciando a época 2/20.
+2025-01-19 21:21:05,909 - INFO - Perda média de treinamento na época 2: 0.4733
+2025-01-19 21:21:34,801 - INFO - Validação concluída: Val Loss: 0.4814, Acurácia: 0.8323
+2025-01-19 21:21:34,901 - INFO - Modelo salvo com melhor perda de validação: 0.4814
+2025-01-19 21:21:34,901 - INFO - Tempo de treinamento para a época 2: 128.82 segundos
+2025-01-19 21:21:34,901 - INFO - Iniciando a época 3/20.
+2025-01-19 21:23:14,744 - INFO - Perda média de treinamento na época 3: 0.4734
+2025-01-19 21:23:43,816 - INFO - Validação concluída: Val Loss: 0.4811, Acurácia: 0.8327
+2025-01-19 21:23:43,920 - INFO - Modelo salvo com melhor perda de validação: 0.4811
+2025-01-19 21:23:43,921 - INFO - Tempo de treinamento para a época 3: 129.02 segundos
+2025-01-19 21:23:43,921 - INFO - Iniciando a época 4/20.
+2025-01-19 21:25:26,619 - INFO - Perda média de treinamento na época 4: 0.4731
+2025-01-19 21:25:54,814 - INFO - Validação concluída: Val Loss: 0.4811, Acurácia: 0.8327
+2025-01-19 21:25:54,815 - INFO - Tempo de treinamento para a época 4: 130.89 segundos
+2025-01-19 21:25:54,815 - INFO - Iniciando a época 5/20.
+2025-01-19 21:27:33,074 - INFO - Perda média de treinamento na época 5: 0.4729
+2025-01-19 21:28:01,330 - INFO - Validação concluída: Val Loss: 0.4811, Acurácia: 0.8327
+2025-01-19 21:28:01,331 - INFO - Tempo de treinamento para a época 5: 126.52 segundos
+2025-01-19 21:28:01,331 - INFO - Iniciando a época 6/20.
+2025-01-19 21:29:41,647 - INFO - Perda média de treinamento na época 6: 0.4731
+2025-01-19 21:30:10,593 - INFO - Validação concluída: Val Loss: 0.4811, Acurácia: 0.8327
+2025-01-19 21:30:10,594 - INFO - Tempo de treinamento para a época 6: 129.26 segundos
+2025-01-19 21:30:10,594 - INFO - Iniciando a época 7/20.
+2025-01-19 21:31:52,182 - INFO - Perda média de treinamento na época 7: 0.4729

@@ -36,7 +36,7 @@ def load_data(data_dir, batch_size=32, train_ratio=0.7, val_ratio=0.15, transfor
         transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(10),
-            transforms.Resize((150, 150)),  # Alterado para 150x150 para compatibilidade
+            transforms.Resize((128, 128)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalização padrão do ImageNet
         ])
@@ -71,9 +71,9 @@ def load_data(data_dir, batch_size=32, train_ratio=0.7, val_ratio=0.15, transfor
     return train_loader, val_loader, test_loader
 
 # Exemplo de uso (remova ou comente isso antes de integrar ao seu projeto principal)
-if __name__ == "__main__":
-    config = load_config()  # Carrega as configurações do arquivo YAML
-    data_dir = config['data']['training']['data_dir']  # Obtém o diretório de dados do arquivo de configuração
-    batch_size = config['data']['training']['batch_size']  # Obtém o tamanho do lote do arquivo de configuração
-    train_loader, val_loader, test_loader = load_data(data_dir=data_dir, batch_size=batch_size)
-    logging.info("Train loader, validation loader, and test loader are ready.")
+# if __name__ == "__main__":
+#     config = load_config()  # Carrega as configurações do arquivo YAML
+#     data_dir = config['training']['data_dir']  # Obtém o diretório de dados do arquivo de configuração
+#     batch_size = config['training']['batch_size']  # Obtém o tamanho do lote do arquivo de configuração
+#     train_loader, val_loader, test_loader = load_data(data_dir=data_dir, batch_size=batch_size)
+#     logging.info("Train loader, validation loader, and test loader are ready.")

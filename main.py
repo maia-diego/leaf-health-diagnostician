@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Importações das funções
 try:
-    from src.train_googleNet import LeafHealthClassifier
+    from src.train import LeafHealthClassifier  # Atualizado para importar do novo train.py
     from src.evaluate import evaluate_model
     from src.explain import explain_model
     from src.classify import classify_images 
@@ -21,7 +21,7 @@ except ImportError as e:
 # Carregar configuração
 def load_config(file_path="config.yaml"):
     """Carrega as configurações do arquivo YAML."""
-    print(f"Carregando configurações do arquivo: {file_path}")
+    logging.info(f"Carregando configurações do arquivo: {file_path}")
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
 

@@ -1,55 +1,70 @@
-# **Leaf Health Diagnostician**  
-**Classificador de Folhas de Manga: Saudáveis vs Doentes**
+# Leaf Health Diagnostician
 
----
+Este projeto é uma aplicação de aprendizado de máquina para classificar a saúde das folhas de plantas. Utiliza redes neurais convolucionais (CNNs) para analisar imagens de folhas e determinar se estão saudáveis ou doentes.
 
-## **Descrição do Projeto**
-O **Leaf Health Diagnostician** é um sistema de classificação binária desenvolvido para identificar automaticamente o estado de saúde de folhas de manga. Ele utiliza redes neurais convolucionais (CNNs) para analisar imagens de alta resolução e categorizar as folhas como **saudáveis** ou **doentes**. Este projeto busca contribuir para o monitoramento agrícola, permitindo a detecção precoce de doenças em plantações de manga, melhorando a produtividade e reduzindo perdas.
+## Estrutura do Projeto
 
----
+- **`src/`**: Contém o código-fonte da aplicação.
+  - **`train.py`**: Script para treinar o modelo de classificação.
+  - **`classify.py`**: Script para classificar imagens usando um modelo pré-treinado.
+  - **`data/`**: Módulo para carregamento e pré-processamento de dados.
+- **`models/`**: Diretório onde os modelos treinados são salvos.
+- **`images/`**: Diretório contendo conjuntos de dados de imagens de folhas.
+- **`config.yaml`**: Arquivo de configuração para definir parâmetros de treinamento e classificação.
+- **`history/`**: Diretório onde o histórico de treinamento é salvo.
+- **`train/`**: Diretório onde gráficos de desempenho são salvos.
 
-## **Sobre o Dataset**
-O projeto utiliza o **Mango Leaf Dataset: Healthy vs Diseased**, que contém imagens de alta resolução organizadas em duas classes:
+## Pré-requisitos
 
-### **Classes**
-1. **Saudável:** Folhas sem sinais visíveis de doenças.
-2. **Doente:** Folhas com sintomas como descoloração ou manchas.
+- Python 3.8 ou superior
+- Anaconda ou pip para gerenciar pacotes
+- PyTorch
+- Torchvision
+- PIL (Python Imaging Library)
+- scikit-learn
+- Matplotlib
+- PyYAML
+- Pandas
 
-### **Detalhes do Dataset**
-- **Balanceamento de Classes:** Aproximadamente 50% de folhas saudáveis e 50% de folhas doentes.
-- **Formato:** Imagens de alta resolução padronizadas.
-- **Licenciamento:** Disponível sob a licença Attribution 4.0 International, permitindo acesso aberto com atribuição adequada.
-- **Fonte:** O dataset está disponível nas plataformas [Zenodo](https://zenodo.org) e [Kaggle](https://kaggle.com).
+## Instalação
 
-### **Aplicações**
-- **Aprendizado de Máquina:** Treinamento de modelos de classificação binária.
-- **Monitoramento de Doenças:** Desenvolvimento de sistemas de diagnóstico para a saúde de plantações de manga.
-- **Processamento de Imagens:** Pesquisa em extração de características e segmentação.
-
----
-
-## **Objetivo do Projeto**
-- **Automação no Diagnóstico:** Auxiliar agricultores e pesquisadores a identificar rapidamente doenças em folhas de manga.
-- **Desenvolvimento Sustentável:** Reduzir perdas agrícolas por meio da detecção precoce de doenças.
-- **Explicabilidade:** Incorporar técnicas como SHAP (SHapley Additive ExPlanations) para explicar as decisões do modelo.
-
----
-
-## **Estrutura do Projeto**
-- **Modelos:** Treinamento de redes convolucionais (CNNs) utilizando o PyTorch.
-- **Métricas:** Avaliação com relatórios de classificação, matriz de confusão e análise de viés e variância.
-- **Explicabilidade:** Utilização do SHAP para interpretação das predições do modelo.
-- **Dataset:** Armazenado e processado localmente, com transformações de normalização e redimensionamento aplicadas.
-
----
-
-## **Como Executar**
-### **Pré-requisitos**
-- Python 3.8+ instalado
-- Dependências listadas no arquivo `requirements.txt`
-
-### **Passos**
-1. **Clonar o Repositório:**
+1. Clone o repositório:
    ```bash
-   git clone https://github.com/maia-diego/leaf-health-diagnostician.git
+   git clone https://github.com/seu-usuario/leaf-health-diagnostician.git
    cd leaf-health-diagnostician
+
+
+Crie um ambiente virtual e ative-o:
+
+
+conda create --name leaf-health python=3.8
+conda activate leaf-health
+
+
+Instale as dependências:
+
+
+pip install -r requirements.txt
+
+
+Uso
+Treinamento do Modelo
+Para treinar um modelo, execute o script train.py. Certifique-se de que o arquivo config.yaml está configurado corretamente para o conjunto de dados e parâmetros desejados.
+
+python src/train.py
+
+Classificação de Imagens
+Para classificar imagens usando um modelo pré-treinado, execute o script classify.py. Atualize o caminho do modelo e o diretório de imagens no script conforme necessário.
+
+python src/classify.py
+
+Configuração
+O arquivo config.yaml contém configurações para treinamento e classificação, incluindo diretórios de dados, hiperparâmetros de treinamento e configurações de logging. Certifique-se de ajustar esses parâmetros conforme necessário para seu uso específico.
+
+Contribuição
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
+
+Licença
+Este projeto está licenciado sob a licença MIT. Consulte o arquivo LICENSE para obter mais informações.
+
+

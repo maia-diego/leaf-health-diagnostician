@@ -4,7 +4,7 @@ from datetime import datetime
 import logging
 import torch
 import torch.nn as nn
-from torchvision import transforms
+from torchvision import models, transforms
 from PIL import Image
 import yaml
 import time
@@ -14,38 +14,50 @@ def load_config(file_path="config.yaml"):
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
 
-# Função para criar a arquitetura do modelo com base no state_dict
-def create_model_architecture(state_dict, num_classes=2):
-    """Cria a arquitetura do modelo com base no state_dict."""
+# Função para inferir a arquitetura do modelo a partir do state_dict
+def infer_model_architecture(state_dict, num_classes=2):
     layers = []
     in_channels = 3  # Número de canais de entrada (RGB)
-    
+    input_size = 128  # Supondo um tamanho de entrada de 128x128
+
     for key, value in state_dict.items():
         if 'weight' in key:
             if len(value.shape) == 4:  # Camada convolucional
                 out_channels, expected_in_channels, _, _ = value.shape
+                if in_channels != expected_in_channels:
+                    raise ValueError(f"Esperado {expected_in_channels} canais, mas recebeu {in_channels}.")
+                
                 layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
-                layers.append(nn.BatchNorm2d(out_channels))
                 layers.append(nn.ReLU())
                 layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
                 in_channels = out_channels
+                input_size //= 2  # Reduz o tamanho da entrada após o max pooling
             elif len(value.shape) == 2:  # Camada linear
                 out_features, in_features = value.shape
+                # Achata a entrada para corresponder ao tamanho esperado
                 layers.append(nn.Flatten())
-                layers.append(nn.Linear(in_features, out_features))
+                layers.append(nn.Linear(in_channels * input_size * input_size, out_features))
                 layers.append(nn.ReLU())
                 layers.append(nn.Dropout(p=0.5))
 
     layers.append(nn.Linear(out_features, num_classes))
-    layers.append(nn.Softmax(dim=1))
     return nn.Sequential(*layers)
 
 # Função para carregar o modelo
 def load_model(model_path, num_classes=2):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     state_dict = torch.load(model_path, map_location=device)
-    model = create_model_architecture(state_dict, num_classes)
-    model.load_state_dict(state_dict, strict=False)
+    model = infer_model_architecture(state_dict, num_classes)
+    
+    model_keys = set(model.state_dict().keys())
+    filtered_state_dict = {k: v for k, v in state_dict.items() if k in model_keys}
+
+    try:
+        model.load_state_dict(filtered_state_dict, strict=False)
+    except RuntimeError as e:
+        logging.error(f"Erro ao carregar o state_dict: {e}")
+        raise e
+
     return model.to(device)
 
 def classify_images(image_dir, model_path, class_names):
@@ -68,7 +80,7 @@ def classify_images(image_dir, model_path, class_names):
 
     # Definindo transformação das imagens
     transform = transforms.Compose([
-        transforms.Resize((150, 150)),  # Ajuste o tamanho conforme necessário
+        transforms.Resize((128, 128)),
         transforms.ToTensor(),
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
     ])
@@ -130,7 +142,7 @@ if __name__ == "__main__":
     # image_dir = r'/home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/Mango_Leaf_Dataset/Diseased'
     # image_dir = r'/home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/tomato_dataset/valid/Tomato___healthy'
     # image_dir = r'/home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/tomato_dataset/valid/Tomato___Late_blight'
-    image_dir = r'/home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/tomato_dataset/valid/Tomato___Leaf_Mold'
+    # image_dir = r'/home/diegomaia/workspace/dev/mestrado/leaf-health-diagnostician/images/tomato_dataset/valid/Tomato___Leaf_Mold'
     class_names = ["Diseased", "Healthy"]  # Nomes das classes correspondentes às saídas do modelo
 
     classify_images(image_dir=image_dir, model_path=model_path, class_names=class_names)

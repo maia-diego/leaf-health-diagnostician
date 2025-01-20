@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 import torch.optim as optim
-from torchvision import models
+from torchvision import transforms
 from sklearn.metrics import accuracy_score
 from torch.utils.tensorboard import SummaryWriter
 from src.data import load_data
@@ -37,11 +37,11 @@ class LeafHealthClassifier:
         self.epochs = config['data']['training']['num_epochs']
         self.lr = config['data']['training']['learning_rate']
         self.batch_size = config['data']['training']['batch_size']
-        self.dataset_fraction = config['data']['training'].get('dataset_fraction', 1.0)  # Padrão é 100%
+        self.dataset_fraction = config['data']['training'].get('dataset_fraction', 1.0)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = self.initialize_model()
         self.writer = SummaryWriter(log_dir='runs/train')
-        self.history = {'loss': [], 'val_loss': [], 'accuracy': [], 'val_accuracy': [], 'bias': [], 'variance': []}  # Para armazenar o histórico
+        self.history = {'loss': [], 'val_loss': [], 'accuracy': [], 'val_accuracy': [], 'bias': [], 'variance': []}
 
         # Configuração de logging
         log_file = os.path.join(config['logging']['log_dir'], f'train_log_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt')
@@ -53,18 +53,26 @@ class LeafHealthClassifier:
         logging.getLogger().addHandler(file_handler)
 
     def initialize_model(self):
-        """Inicializa e configura a arquitetura da Custom CNN com metade dos elementos."""
-        logging.info("Inicializando a arquitetura da Custom CNN reduzida.")
+        """Inicializa e configura a arquitetura da Custom CNN."""
+        logging.info("Inicializando a arquitetura da Custom CNN.")
         model = nn.Sequential(
-            nn.Flatten(),  # Aplana a entrada
-            nn.Linear(150*150*3, 256),  # Camada de entrada (reduzida de 512 para 256)
-            nn.ReLU(),                  # Ativação ReLU
-            nn.Dropout(p=0.5),          # Dropout 50%
-            nn.Linear(256, 128),        # Camada oculta (reduzida de 256 para 128)
-            nn.ReLU(),                  # Ativação ReLU
-            nn.Dropout(p=0.5),          # Dropout 50%
-            nn.Linear(128, 2),          # Camada de saída (mantida em 2 para classificação binária)
-            nn.Softmax(dim=1)           # Softmax
+            nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Flatten(),
+            nn.Linear(64 * 37 * 37, 512),
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
+            nn.Linear(256, 2),
+            nn.Softmax(dim=1)
         )
         self.initialize_weights(model)
         return model.to(self.device)
@@ -73,7 +81,7 @@ class LeafHealthClassifier:
         """Inicializa os pesos da rede neural com a técnica de He."""
         logging.info("Inicializando pesos do modelo com a técnica de He.")
         for layer in model.modules():
-            if isinstance(layer, nn.Linear):
+            if isinstance(layer, (nn.Conv2d, nn.Linear)):
                 nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
                 if layer.bias is not None:
                     nn.init.zeros_(layer.bias)
@@ -84,17 +92,16 @@ class LeafHealthClassifier:
         train_loader, val_loader, _ = load_data(self.data_dir, self.batch_size, self.dataset_fraction)
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=1e-5)
-        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=3)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5)
 
         best_val_loss = float('inf')
-        patience = 5  # Para Early Stopping
+        patience = 10  # Para Early Stopping
 
-        # Medir tempo de treinamento
         total_training_time = 0
 
         for epoch in range(self.epochs):
-            start_time = time.time()  # Início do tempo de treinamento para a época
-            self.model.train()  # Muda o modelo para modo de treinamento
+            start_time = time.time()
+            self.model.train()
             total_loss = 0
             
             logging.info(f"Iniciando a época {epoch + 1}/{self.epochs}.")
@@ -127,14 +134,14 @@ class LeafHealthClassifier:
             self.history['variance'].append(variance)
 
             # Ajusta a taxa de aprendizado
-            scheduler.step(val_loss)  # Certifique-se de que val_loss foi calculado antes
+            scheduler.step(val_loss)
 
             # Implementa Early Stopping
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 torch.save(self.model.state_dict(), f"models/{timestamp}_leaf_health_model.pth")
-                patience = 5
+                patience = 10
                 logging.info(f"Modelo salvo com melhor perda de validação: {best_val_loss:.4f}")
             else:
                 patience -= 1
@@ -142,13 +149,12 @@ class LeafHealthClassifier:
                     logging.info("Early stopping triggered.")
                     break
 
-            # Calcular e registrar o tempo de treinamento para a época
             epoch_time = time.time() - start_time
             total_training_time += epoch_time
             logging.info(f"Tempo de treinamento para a época {epoch + 1}: {epoch_time:.2f} segundos")
 
         logging.info(f"Tempo total de treinamento: {total_training_time:.2f} segundos")
-        self.writer.close()  # Fecha o TensorBoard writer
+        self.writer.close()
 
         # Plotar gráficos de desempenho
         self.save_metrics()
@@ -176,17 +182,14 @@ class LeafHealthClassifier:
 
     def save_history(self, filename='training_history.csv'):
         """Salva o histórico de treinamento em um arquivo CSV com timestamp."""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # Formato: YYYYMMDD_HHMMSS
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         history_dir = 'history'
         
-        # Cria o diretório se não existir
         if not os.path.exists(history_dir):
             os.makedirs(history_dir)
         
-        # Define o caminho completo do arquivo
         full_filename = os.path.join(history_dir, f'{timestamp}_{filename}')
         
-        # Salva o DataFrame em um arquivo CSV
         history_df = pd.DataFrame(self.history)
         history_df.to_csv(full_filename, index=False)
         logging.info(f"Histórico de treinamento salvo em {full_filename}.")
@@ -200,7 +203,6 @@ class LeafHealthClassifier:
 
         plt.figure(figsize=(12, 5))
         
-        # Gráfico de perda
         plt.subplot(1, 2, 1)
         plt.plot(self.history['loss'], label='Loss')
         plt.plot(self.history['val_loss'], label='Val Loss')
@@ -209,10 +211,9 @@ class LeafHealthClassifier:
         plt.ylim([0.0, 1])
         plt.legend(loc='upper right')
         plt.title('Gráfico de Perda')
-        plt.savefig(os.path.join(train_dir, f'{timestamp}_grafico_perda.png'))  # Salva a imagem com timestamp
+        plt.savefig(os.path.join(train_dir, f'{timestamp}_grafico_perda.png'))
         plt.close()
 
-        # Gráfico de acurácia
         plt.subplot(1, 2, 2)
         plt.plot(self.history['accuracy'], label='Accuracy')
         plt.plot(self.history['val_accuracy'], label='Val Accuracy')
@@ -221,11 +222,11 @@ class LeafHealthClassifier:
         plt.ylim([0.0, 1])
         plt.legend(loc='lower right')
         plt.title('Gráfico de Acurácia')
-        plt.savefig(os.path.join(train_dir, f'{timestamp}_grafico_acuracia.png'))  # Salva a imagem com timestamp
+        plt.savefig(os.path.join(train_dir, f'{timestamp}_grafico_acuracia.png'))
         plt.close()
 
 def main():
-    config = load_config()  # Carrega as configurações do arquivo YAML
+    config = load_config()
     trainer = LeafHealthClassifier(config)
     trainer.train()
     trainer.save_history()

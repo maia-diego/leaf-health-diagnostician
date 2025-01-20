@@ -56,3 +56,6 @@ config.yaml
 images/
 data/
 runs/
+logs/
+models/
+analises/

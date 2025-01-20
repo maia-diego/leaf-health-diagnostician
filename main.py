@@ -13,7 +13,7 @@ try:
     from src.train import LeafHealthClassifier  # Atualizado para importar do novo train.py
     from src.evaluate import evaluate_model
     from src.explain import explain_model
-    from src.classify import classify_images 
+    from src.classify_googleNet import classify_images 
     logging.info("Módulos importados com sucesso.")
 except ImportError as e:
     logging.error(f"Erro ao importar módulos: {e}")
